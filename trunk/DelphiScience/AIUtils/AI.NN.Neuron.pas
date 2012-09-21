@@ -67,8 +67,9 @@ function TNeuron.GetOutput: Single;
 var i: Integer;
 begin
   Result := 0;
-  if Load > FThreshold  then Result := 1;
-  if FAnalogOutput then Result := 1/1+Exp(-Load+FThreshold);
+  if FAnalogOutput then 
+    Result := 1/1+Exp(-Load+FThreshold)
+  else if Load > FThreshold  then Result := 1;
 end;
 
 function TNeuron.GetWeight(Index: Integer): Single;
