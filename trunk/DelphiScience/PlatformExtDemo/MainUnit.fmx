@@ -1,0 +1,90 @@
+object frmMain: TfrmMain
+  Left = 0
+  Top = 0
+  Caption = 'Platform Extensions Demo'
+  ClientHeight = 658
+  ClientWidth = 654
+  FormFactor.Width = 1680
+  FormFactor.Height = 1050
+  FormFactor.Devices = [dkDesktop]
+  OnCreate = FormCreate
+  object TabControl1: TTabControl
+    Align = alClient
+    Height = 616.000000000000000000
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Position.X = 10.000000000000000000
+    Position.Y = 10.000000000000000000
+    TabIndex = 0
+    Width = 634.000000000000000000
+    object TabItem1: TTabItem
+      WordWrap = False
+      Height = 24.000000000000000000
+      IsSelected = True
+      Position.X = 1.000000000000000000
+      Text = 'SystemFonts'
+      Width = 83.000000000000000000
+      object ListBox1: TListBox
+        Touch.InteractiveGestures = [igPan]
+        Align = alClient
+        Height = 463.000000000000000000
+        Padding.Left = 10.000000000000000000
+        Padding.Right = 10.000000000000000000
+        Position.X = 10.000000000000000000
+        Position.Y = 35.000000000000000000
+        Width = 614.000000000000000000
+        ItemHeight = 24.000000000000000000
+        OnChange = ListBox1Change
+      end
+      object Label1: TLabel
+        Align = alTop
+        Font.Family = 'Tahoma'
+        Font.Size = 14.000000000000000000
+        StyledSettings = [ssFontColor]
+        Height = 15.000000000000000000
+        Padding.Left = 10.000000000000000000
+        Padding.Top = 10.000000000000000000
+        Padding.Right = 10.000000000000000000
+        Padding.Bottom = 10.000000000000000000
+        Position.X = 10.000000000000000000
+        Position.Y = 10.000000000000000000
+        Text = 'Fonts Installed on Your System'
+        Width = 614.000000000000000000
+      end
+      object Memo1: TMemo
+        Touch.InteractiveGestures = [igPan]
+        Align = alBottom
+        Height = 74.000000000000000000
+        Padding.Left = 10.000000000000000000
+        Padding.Top = 10.000000000000000000
+        Padding.Right = 10.000000000000000000
+        Padding.Bottom = 10.000000000000000000
+        Position.X = 10.000000000000000000
+        Position.Y = 508.000000000000000000
+        Width = 614.000000000000000000
+        DisableFocusEffect = False
+        KeyboardType = vktDefault
+        Lines.Strings = (
+          'The quick brown fox jumps over the lazy dog')
+        WordWrap = True
+      end
+    end
+  end
+  object StatusBar1: TStatusBar
+    Height = 22.000000000000000000
+    Position.Y = 636.000000000000000000
+    ShowSizeGrip = True
+    Width = 654.000000000000000000
+    object Label2: TLabel
+      Align = alClient
+      Height = 22.000000000000000000
+      Padding.Left = 10.000000000000000000
+      Padding.Right = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Text = 'Copyright '#169' 2012 By M. Ali '#199'al'#305#351'kan'
+      Width = 634.000000000000000000
+    end
+  end
+end

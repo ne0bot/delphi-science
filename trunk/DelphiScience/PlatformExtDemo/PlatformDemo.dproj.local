@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2012.11.20 12:04:42.447,=\\vmware-host\Shared Folders\Documents\RAD Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2012.11.20 12:06:07.855,Z:\mehmedali\DelphiScience\PlatformExtDemo\MainUnit.fmx=\\vmware-host\Shared Folders\Documents\RAD Studio\Projects\Unit2.fmx</Transaction>
+    <Transaction>2012.11.20 12:06:07.855,Z:\mehmedali\DelphiScience\PlatformExtDemo\MainUnit.pas=\\vmware-host\Shared Folders\Documents\RAD Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2012.11.20 12:06:16.584,Z:\mehmedali\DelphiScience\PlatformExtDemo\PlatformDemo.dproj=\\vmware-host\Shared Folders\Documents\RAD Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>2012.11.20 12:09:11.897,=Z:\mehmedali\DelphiScience\Utils\FMX.PlatformExtensions.pas</Transaction>
+  </Transactions>
+</BorlandProject>
