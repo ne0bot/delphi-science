@@ -16,6 +16,9 @@ type
     Label1: TLabel;
     StatusBar1: TStatusBar;
     Label2: TLabel;
+    TabItem2: TTabItem;
+    Label3: TLabel;
+    ListBox2: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure ListBox1Change(Sender: TObject);
   private
@@ -43,6 +46,16 @@ begin
      ListBox1.Items.Add(fList[i]);
   end;
   ListBox1.EndUpdate;
+  fList.Free;
+
+  fList := TStringList.Create;
+  PlatformExtensions.GetRunningAplications(fList);
+  Listbox2.BeginUpdate;
+  for i := 0 to fList.Count -1 do
+  begin
+     ListBox2.Items.Add(fList[i]);
+  end;
+  ListBox2.EndUpdate;
   fList.Free;
 end;
 
