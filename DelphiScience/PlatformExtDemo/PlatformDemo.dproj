@@ -217,15 +217,15 @@
                         <RemoteName>PlatformDemo.rsm</RemoteName>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="OSX32\Release\PlatformDemo.info.plist" Configuration="Release" Class="ProjectOSXInfoPList">
+                    <Platform Name="OSX32">
+                        <RemoteName>Info.plist</RemoteName>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="OSX32\Debug\PlatformDemo.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\MacOS\</RemoteDir>
                         <RemoteName>PlatformDemo.rsm</RemoteName>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="OSX32\Release\PlatformDemo.info.plist" Configuration="Release" Class="ProjectOSXInfoPList">
-                    <Platform Name="OSX32">
-                        <RemoteName>Info.plist</RemoteName>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="OSX32\Release\PlatformDemo.entitlements" Configuration="Release" Class="ProjectOSXEntitlements">

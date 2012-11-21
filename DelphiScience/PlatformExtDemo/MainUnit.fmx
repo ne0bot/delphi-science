@@ -71,6 +71,41 @@ object frmMain: TfrmMain
         WordWrap = True
       end
     end
+    object TabItem2: TTabItem
+      WordWrap = False
+      Height = 24.000000000000000000
+      IsSelected = False
+      Position.X = 84.000000000000000000
+      Text = 'Running Applications'
+      Width = 127.000000000000000000
+      object Label3: TLabel
+        Align = alTop
+        Font.Family = 'Tahoma'
+        Font.Size = 14.000000000000000000
+        StyledSettings = [ssFontColor]
+        Height = 15.000000000000000000
+        Padding.Left = 10.000000000000000000
+        Padding.Top = 10.000000000000000000
+        Padding.Right = 10.000000000000000000
+        Padding.Bottom = 10.000000000000000000
+        Position.X = 10.000000000000000000
+        Position.Y = 10.000000000000000000
+        Text = 'Currently running applications on Your System'
+        Width = 614.000000000000000000
+      end
+      object ListBox2: TListBox
+        Touch.InteractiveGestures = [igPan]
+        Align = alClient
+        Height = 547.000000000000000000
+        Padding.Left = 10.000000000000000000
+        Padding.Right = 10.000000000000000000
+        Padding.Bottom = 10.000000000000000000
+        Position.X = 10.000000000000000000
+        Position.Y = 35.000000000000000000
+        Width = 614.000000000000000000
+        ItemHeight = 24.000000000000000000
+      end
+    end
   end
   object StatusBar1: TStatusBar
     Height = 22.000000000000000000

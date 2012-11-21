@@ -27,16 +27,16 @@
             <LocalCommand/>
             <RemoteCommand/>
         </DeployFile>
-        <DeployFile Include="OSX32\Debug\PlatformDemo.rsm" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>PlatformDemo.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>PlatformDemo.rsm</RemoteName>
+        <DeployFile Include="OSX32\Release\PlatformDemo.info.plist" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PlatformDemo.app\Contents\</RemoteDir>
+            <RemoteName>Info.plist</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
         </DeployFile>
-        <DeployFile Include="OSX32\Release\PlatformDemo.info.plist" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PlatformDemo.app\Contents\</RemoteDir>
-            <RemoteName>Info.plist</RemoteName>
+        <DeployFile Include="OSX32\Debug\PlatformDemo.rsm" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>PlatformDemo.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>PlatformDemo.rsm</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
