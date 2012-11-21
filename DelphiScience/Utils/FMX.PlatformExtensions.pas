@@ -10,6 +10,7 @@ Type
   TPlatformExtensions = class(TObject)
   public
     Class Procedure GetSystemFonts(FontList:TStringlist);virtual;abstract;
+    Class Procedure GetRunningAplications(Applist:TStringlist);virtual;abstract;
   end;
 
 var
