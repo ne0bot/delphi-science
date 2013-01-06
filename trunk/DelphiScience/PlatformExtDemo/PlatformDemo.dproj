@@ -6,7 +6,7 @@
         <MainSource>PlatformDemo.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">OSX32</Platform>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>7</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
@@ -44,6 +44,18 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='OSX32' and '$(Cfg_2)'=='true') or '$(Cfg_2_OSX32)'!=''">
+        <Cfg_2_OSX32>true</Cfg_2_OSX32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
+        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Manifest_File>None</Manifest_File>
@@ -60,6 +72,8 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_OSX32)'!=''">
+        <Debugger_Launcher>/usr/X11/bin/xterm -e &quot;%debuggee%&quot;</Debugger_Launcher>
+        <EL_ReadWriteFileDialog>true</EL_ReadWriteFileDialog>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities</VerInfo_Keys>
         <DCC_UsePackage>bindcompfmx;DBXSqliteDriver;fmx;rtl;dbrtl;DbxClientDriver;IndySystem;bindcomp;inetdb;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;xmlrtl;DbxCommonDriver;IndyProtocols;dbxcds;DBXMySQLDriver;bindengine;soaprtl;bindcompdbx;DBXOracleDriver;CustomIPTransport;dsnap;IndyIPServer;DBXInformixDriver;fmxase;IndyCore;IndyIPCommon;DBXFirebirdDriver;inet;fmxobj;inetdbxpress;DBXSybaseASADriver;fmxdae;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
@@ -69,7 +83,6 @@
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_UsePackage>Is3D;bindcompfmx;DBXSqliteDriver;vcldbx;fmx;rtl;dbrtl;DbxClientDriver;IndySystem;TeeDB;bindcomp;inetdb;vclib;inetdbbde;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DBXOdbcDriver;DataSnapServer;Tee;DataSnapProviderClient;xmlrtl;svnui;ibxpress;DbxCommonDriver;DBXSybaseASEDriver;vclimg;IndyProtocols;dbxcds;DBXMySQLDriver;MetropolisUILiveTile;vclactnband;bindengine;vcldb;soaprtl;bindcompdbx;vcldsnap;bindcompvcl;FMXTee;TeeUI;Tekhnelogos;vclie;vcltouch;DBXDb2Driver;websnap;DBXOracleDriver;CustomIPTransport;vclribbon;VclSmp;dsnap;IndyIPServer;DBXInformixDriver;Intraweb;fmxase;vcl;IndyCore;DataSnapConnectors;IndyIPCommon;CloudService;DBXMSSQLDriver;dsnapcon;DBXFirebirdDriver;FmxTeeUI;inet;CodeSiteExpressPkg;fmxobj;vclx;inetdbxpress;webdsnap;svn;DBXSybaseASADriver;FMXMeshObjects;fmxdae;bdertl;dbexpress;adortl;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
@@ -97,6 +110,18 @@
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>false</DCC_DebugInformation>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_OSX32)'!=''">
+        <VerInfo_Keys>CFBundleName=$(MSBuildProjectName);CFBundleDisplayName=$(MSBuildProjectName);CFBundleIdentifier=$(MSBuildProjectName);CFBundleVersion=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities</VerInfo_Keys>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <PF_Sandbox>3rd Party Mac Developer Installer</PF_Sandbox>
+        <PF_DevSandbox>3rd Party Mac Developer</PF_DevSandbox>
+        <BT_BuildType>App Store</BT_BuildType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -163,43 +188,26 @@
                     <Source Name="MainSource">PlatformDemo.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\CloudBBoxD17.bpl">EldoS CloudBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DAVBBoxSrvD17.bpl">EldoS WebDAVBlackbox server</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DCBBoxD17.bpl">SecureBlackbox Distributed Crypto</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DsgnBBoxD17.bpl">SecureBlackbox design-time package</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\EDIBBoxD17.bpl">EldoS EDIBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\FTPSBBoxSrvD17.bpl">EldoS FTPSBlackbox server</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\MailBBoxD17.bpl">EldoS MailBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\OfficeBBoxD17.bpl">EldoS OfficeBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PDFBBoxD17.bpl">EldoS PDFBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPLDAPBBoxD17.bpl">EldoS PGPLDAPBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPMIMEBBoxD17.bpl">EldoS PGPMIMEBlackbox</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPSSHBBoxD17.bpl">EldoS SecureBlackbox, OpenPGP add-in for SSH</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPTLSBBoxD17.bpl">EldoS SecureBlackbox, OpenPGP add-in for SSL/TLS</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PKISSHBBoxD17.bpl">EldoS SecureBlackbox, PKI add-in for SSH</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SFTPBBoxSrvD17.bpl">EldoS SFTPBlackbox server</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SMIMEBBoxD17.bpl">EldoS SMIMEBlackbox</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k170.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp170.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k170.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp170.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\BaseBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\BaseBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\CloudBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\CloudBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DAVBBoxCliD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DAVBBoxCliD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DAVBBoxSrvD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DAVBBoxSrvD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DCBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DCBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DsgnBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\DsgnBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\EDIBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\EDIBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\FTPSBBoxCliD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\FTPSBBoxCliD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\FTPSBBoxSrvD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\FTPSBBoxSrvD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\HTTPBBoxCliD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\HTTPBBoxCliD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\HTTPBBoxSrvD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\HTTPBBoxSrvD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\LDAPBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\LDAPBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\MailBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\MailBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\MIMEBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\MIMEBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\OfficeBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\OfficeBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PDFBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PDFBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPLDAPBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPLDAPBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPMIMEBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPMIMEBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPSSHBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPSSHBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPTLSBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PGPTLSBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PKIBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PKIBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PKISSHBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\PKISSHBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SFTPBBoxCliD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SFTPBBoxCliD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SFTPBBoxSrvD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SFTPBBoxSrvD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SMIMEBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SMIMEBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSHBBoxCliD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSHBBoxCliD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSHBBoxSrvD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSHBBoxSrvD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSLBBoxCliD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSLBBoxCliD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSLBBoxSrvD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\SSLBBoxSrvD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\XMLBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\XMLBBoxD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\XMLBBoxSecD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\XMLBBoxSecD17.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\ZIPBBoxD17.bpl">File C:\Program Files (x86)\EldoS\SecureBlackbox.VCL\Packages\ZIPBBoxD17.bpl not found</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment>
@@ -217,15 +225,15 @@
                         <RemoteName>PlatformDemo.rsm</RemoteName>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="OSX32\Release\PlatformDemo.info.plist" Configuration="Release" Class="ProjectOSXInfoPList">
-                    <Platform Name="OSX32">
-                        <RemoteName>Info.plist</RemoteName>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="OSX32\Debug\PlatformDemo.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\MacOS\</RemoteDir>
                         <RemoteName>PlatformDemo.rsm</RemoteName>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="OSX32\Release\PlatformDemo.info.plist" Configuration="Release" Class="ProjectOSXInfoPList">
+                    <Platform Name="OSX32">
+                        <RemoteName>Info.plist</RemoteName>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="OSX32\Release\PlatformDemo.entitlements" Configuration="Release" Class="ProjectOSXEntitlements">
