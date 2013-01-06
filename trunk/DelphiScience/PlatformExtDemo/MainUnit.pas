@@ -30,12 +30,15 @@ type
     ListBoxItem2: TListBoxItem;
     ListBoxItem3: TListBoxItem;
     ListBoxItem4: TListBoxItem;
+    PaintBox2: TPaintBox;
+    Line1: TLine;
     procedure FormCreate(Sender: TObject);
     procedure ListBox1Change(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject; Canvas: TCanvas);
     procedure TrackBar1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure ComboBox2Change(Sender: TObject);
+    procedure PaintBox2Paint(Sender: TObject; Canvas: TCanvas);
   private
     { Private declarations }
   public
@@ -52,11 +55,13 @@ implementation
 procedure TfrmMain.ComboBox1Change(Sender: TObject);
 begin
   Paintbox1.Repaint;
+  Paintbox2.Repaint;
 end;
 
 procedure TfrmMain.ComboBox2Change(Sender: TObject);
 begin
   Paintbox1.Repaint;
+  Paintbox2.Repaint;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -113,8 +118,6 @@ begin
     3:PaintBox1.Canvas.Font.Style := [TFontStyle.fsBold,TFontStyle.fsItalic];
   end;
 
-
-
   PaintBox1.Canvas.Fill.Color := TAlphaColors.Black;
   PlatformExtensions.GetTextMetrics(TestTxt,PaintBox1.Canvas.Font,textRect,
                                     Ascent, Descent, CapHeight, XHeight);
@@ -125,6 +128,7 @@ begin
   TextRect.Offset(txtX,txtY);
 
   PaintBox1.Canvas.Stroke.Color := TAlphaColors.Red;
+  PaintBox1.Canvas.StrokeThickness := 1;
   Paintbox1.Canvas.DrawRect(TextRect,0,0,[],1.0);
 
   dy := Ascent; // draw baseline
@@ -139,6 +143,73 @@ begin
   // while XHeight is provided with MacOsX Api, it is not provided with in GDIPlus APi
   // so in in Windows platform X Height is calculated from CapHeight using a statistical
   // multiplier
+
+end;
+
+procedure TfrmMain.PaintBox2Paint(Sender: TObject; Canvas: TCanvas);
+var textRect1,textRect2,textRect3:TRectF;
+    Ascent1,Ascent2,Ascent3, Descent, CapHeight, XHeight: Single;
+    TestTxt:String;
+    txtX,txtY:Single;
+    dy: Single;
+    BaseLine:Single;
+    totalWidth: Single;
+begin
+
+  PaintBox2.Canvas.Font.Family := Combobox1.Items[Combobox1.ItemIndex];
+
+  PaintBox2.Canvas.Font.Style := [];
+  case Combobox2.ItemIndex of
+    1:PaintBox2.Canvas.Font.Style := [TFontStyle.fsBold];
+    2:PaintBox2.Canvas.Font.Style := [TFontStyle.fsItalic];
+    3:PaintBox2.Canvas.Font.Style := [TFontStyle.fsBold,TFontStyle.fsItalic];
+  end;
+  PaintBox2.Canvas.Fill.Color := TAlphaColors.Black;
+  PaintBox2.Canvas.Stroke.Color := TAlphaColors.Red;
+  PaintBox2.Canvas.StrokeThickness := 1;
+
+  PaintBox2.Canvas.Font.Size := 40;
+  TestTxt := 'Big ';
+  PlatformExtensions.GetTextMetrics(TestTxt,PaintBox2.Canvas.Font,textRect1,
+                                    Ascent1, Descent, CapHeight, XHeight);
+
+
+  PaintBox2.Canvas.Font.Size := 20;
+  TestTxt := 'Small';
+  PlatformExtensions.GetTextMetrics(TestTxt,PaintBox2.Canvas.Font,textRect2,
+                                    Ascent2, Descent, CapHeight, XHeight);
+
+  PaintBox2.Canvas.Font.Size := 30;
+  TestTxt := ' Medium';
+  PlatformExtensions.GetTextMetrics(TestTxt,PaintBox2.Canvas.Font,textRect3,
+                                    Ascent3, Descent, CapHeight, XHeight);
+
+  totalWidth := textRect1.Width+textRect2.Width+textRect3.Width;
+  txtX := (PaintBox2.Width - totalWidth) /2;
+  txtY := (PaintBox2.Height-TextRect1.Height)/2;
+  baseLine := txtY+Ascent1;
+
+  PaintBox2.Canvas.DrawLine(PointF(0,baseLine),
+                            PointF(Paintbox2.Width,baseLine),1.0);
+
+  PaintBox2.Canvas.Font.Size := 40;
+  TestTxt := 'Big ';
+  Paintbox2.Canvas.FillText(RectF(txtX,txtY,txtX+TextRect1.Width,txtY+TextRect1.Height),
+                            testTxt,False,1.0,[],TTextAlign.taCenter);
+
+  txtX := txtX+TextRect1.Width;
+  txtY := baseLine-Ascent2;
+  PaintBox2.Canvas.Font.Size := 20;
+  TestTxt := 'Small';
+  Paintbox2.Canvas.FillText(RectF(txtX,txtY,txtX+TextRect2.Width,txtY+TextRect2.Height),
+                            testTxt,False,1.0,[],TTextAlign.taCenter);
+
+  txtX := txtX+TextRect2.Width;
+  txtY := baseLine-Ascent3;
+  PaintBox2.Canvas.Font.Size := 30;
+  TestTxt := ' Medium';
+  Paintbox2.Canvas.FillText(RectF(txtX,txtY,txtX+TextRect3.Width,txtY+TextRect3.Height),
+                            testTxt,False,1.0,[],TTextAlign.taCenter);
 
 end;
 

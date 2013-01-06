@@ -92,18 +92,18 @@ object frmMain: TfrmMain
         Position.X = 10.000000000000000000
         Position.Y = 10.000000000000000000
         Text = 'Currently running applications on Your System'
-        Width = 614.000000000000000000
+        Width = 30.000000000000000000
       end
       object ListBox2: TListBox
         Touch.InteractiveGestures = [igPan]
         Align = alClient
-        Height = 547.000000000000000000
+        Height = 5.000000000000000000
         Padding.Left = 10.000000000000000000
         Padding.Right = 10.000000000000000000
         Padding.Bottom = 10.000000000000000000
         Position.X = 10.000000000000000000
         Position.Y = 35.000000000000000000
-        Width = 614.000000000000000000
+        Width = 30.000000000000000000
         ItemHeight = 24.000000000000000000
       end
     end
@@ -118,7 +118,7 @@ object frmMain: TfrmMain
         Align = alClient
         ClipChildren = True
         ClipParent = True
-        Height = 552.000000000000000000
+        Height = 414.000000000000000000
         Position.Y = 40.000000000000000000
         Width = 634.000000000000000000
         OnPaint = PaintBox1Paint
@@ -171,24 +171,44 @@ object frmMain: TfrmMain
             Height = 19.000000000000000000
             IsSelected = True
             Text = 'Regular'
-            Width = 19.000000000000000000
+            Width = 84.000000000000000000
           end
           object ListBoxItem2: TListBoxItem
             Height = 19.000000000000000000
+            Position.Y = 19.000000000000000000
             Text = 'Bold'
-            Width = 19.000000000000000000
+            Width = 84.000000000000000000
           end
           object ListBoxItem3: TListBoxItem
             Height = 19.000000000000000000
+            Position.Y = 38.000000000000000000
             Text = 'Italic'
-            Width = 19.000000000000000000
+            Width = 84.000000000000000000
           end
           object ListBoxItem4: TListBoxItem
             Height = 19.000000000000000000
+            Position.Y = 57.000000000000000000
             Text = 'BoldItalic'
-            Width = 19.000000000000000000
+            Width = 84.000000000000000000
           end
         end
+      end
+      object PaintBox2: TPaintBox
+        Align = alBottom
+        ClipChildren = True
+        ClipParent = True
+        Height = 136.000000000000000000
+        Position.Y = 456.000000000000000000
+        Width = 634.000000000000000000
+        OnPaint = PaintBox2Paint
+      end
+      object Line1: TLine
+        Align = alBottom
+        Height = 2.000000000000000000
+        LineType = ltTop
+        Position.Y = 454.000000000000000000
+        Stroke.Color = claDarkgray
+        Width = 634.000000000000000000
       end
     end
   end

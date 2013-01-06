@@ -6,7 +6,7 @@
         <MainSource>PlatformDemo.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">OSX32</Platform>
         <TargetedPlatforms>7</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
@@ -116,7 +116,7 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <PF_Sandbox>3rd Party Mac Developer Installer</PF_Sandbox>
         <PF_DevSandbox>3rd Party Mac Developer</PF_DevSandbox>
-        <BT_BuildType>App Store</BT_BuildType>
+        <BT_BuildType>Normal</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -225,15 +225,15 @@
                         <RemoteName>PlatformDemo.rsm</RemoteName>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="OSX32\Release\PlatformDemo.info.plist" Configuration="Release" Class="ProjectOSXInfoPList">
+                    <Platform Name="OSX32">
+                        <RemoteName>Info.plist</RemoteName>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="OSX32\Debug\PlatformDemo.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\MacOS\</RemoteDir>
                         <RemoteName>PlatformDemo.rsm</RemoteName>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="OSX32\Release\PlatformDemo.info.plist" Configuration="Release" Class="ProjectOSXInfoPList">
-                    <Platform Name="OSX32">
-                        <RemoteName>Info.plist</RemoteName>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="OSX32\Release\PlatformDemo.entitlements" Configuration="Release" Class="ProjectOSXEntitlements">
