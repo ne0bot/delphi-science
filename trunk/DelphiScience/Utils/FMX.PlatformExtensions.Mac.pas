@@ -4,14 +4,17 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Rtti, System.Classes,
-  System.Variants,MacApi.Appkit,Macapi.CoreFoundation,Macapi.Foundation,
-  FMX.PlatformExtensions;
+  System.Variants,FMX.Types,FMX.Text,MacApi.Appkit,Macapi.CoreFoundation,
+  Macapi.Foundation,Macapi.CoreText,Macapi.CocoaTypes,FMX.PlatformExtensions;
 
 Type
   TPlatformExtensionsMac = class(TPlatformExtensions)
   public
-    Class Procedure GetSystemFonts(FontList:TStringlist);override;
-    Class Procedure GetRunningAplications(Applist:TStringlist);override;
+    Class Procedure GetSystemFonts(FontList:TStrings);override;
+    Class Procedure GetRunningAplications(Applist:TStrings);override;
+    Class Procedure GetTextMetrics(Text:String; Font:TFont; var TextRect:TRectF;
+                                   var Ascent,Descent:Single;
+                                   var CapHeight,XHeight:Single);override;
   end;
 
 implementation
@@ -19,7 +22,7 @@ implementation
 { TPlatformExtensionsMac }
 
 class procedure TPlatformExtensionsMac.GetRunningAplications(
-  Applist: TStringlist);
+  Applist: TStrings);
 var
   fWorkSpace:NSWorkSpace;
   list:NSArray;
@@ -42,7 +45,7 @@ begin
   end;
 end;
 
-class procedure TPlatformExtensionsMac.GetSystemFonts(FontList: TStringlist);
+class procedure TPlatformExtensionsMac.GetSystemFonts(FontList: TStrings);
 var
   fManager: NsFontManager;
   list:NSArray;
@@ -59,6 +62,67 @@ begin
       FontList.Add(String(lItem.UTF8String))
     end;
   end;
+end;
+
+class procedure TPlatformExtensionsMac.GetTextMetrics(Text: String; Font: TFont;
+  var TextRect: TRectF; var Ascent, Descent, CapHeight, XHeight: Single);
+var aRect:TrectF;
+    Layout: TTextLayout;
+    LFontRef, NewFontRef: CTFontRef;
+begin
+  inherited;
+  aRect := RectF(0,0,1000,1000);
+  if Text.IsEmpty then
+  begin
+    ARect.Right := ARect.Left;
+    ARect.Bottom := ARect.Top;
+  end else begin
+    Layout := TTextLayoutManager.DefaultTextLayout.Create;
+    try
+      Layout.BeginUpdate;
+      Layout.TopLeft := ARect.TopLeft;
+      Layout.MaxSize := PointF(ARect.Width, ARect.Height);
+      Layout.Text := Text;
+      Layout.WordWrap := False;
+      Layout.HorizontalAlign := TTextAlign.taCenter;
+      Layout.VerticalAlign := TTextAlign.taCenter;
+      Layout.Font := Font;
+      Layout.RightToLeft := False;
+      Layout.EndUpdate;
+      ARect := Layout.TextRect;
+      LFontRef := CTFontCreateWithName(CFSTR(Layout.Font.Family), Layout.Font.Size, nil);
+      if TFontStyle.fsBold in Layout.Font.Style then
+      begin
+        NewFontRef := CTFontCreateCopyWithSymbolicTraits(LFontRef, 0, nil,
+          kCTFontBoldTrait, kCTFontBoldTrait);
+        if Assigned(NewFontRef) then
+        begin
+          CFRelease(LFontRef);
+          LFontRef := NewFontRef;
+        end;
+      end;
+      if TFontStyle.fsItalic in Layout.Font.Style then
+      begin
+        NewFontRef := CTFontCreateCopyWithSymbolicTraits(LFontRef, 0, nil,
+          kCTFontItalicTrait, kCTFontItalicTrait);
+        if Assigned(NewFontRef) then
+        begin
+          CFRelease(LFontRef);
+          LFontRef := newFontRef;
+        end;
+      end;
+      Ascent := CTFontGetAscent(LFontRef);
+      Descent :=CTFontGetDescent(LFontRef);
+      CapHeight := CTFontGetCapHeight(LFontRef);
+      XHeight := CTFontGetXHeight(LFontRef);
+      CFRelease(LFontRef);
+      TextRect := aRect;
+      TextRect.Offset(-aRect.Left,-aRect.Top);
+    finally
+      FreeAndNil(Layout);
+    end;
+  end;
+
 end;
 
 end.

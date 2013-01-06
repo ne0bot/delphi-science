@@ -9,8 +9,11 @@ Type
 
   TPlatformExtensions = class(TObject)
   public
-    Class Procedure GetSystemFonts(FontList:TStringlist);virtual;abstract;
-    Class Procedure GetRunningAplications(Applist:TStringlist);virtual;abstract;
+    Class Procedure GetSystemFonts(FontList:TStrings);virtual;abstract;
+    Class Procedure GetRunningAplications(Applist:TStrings);virtual;abstract;
+    Class Procedure GetTextMetrics(Text:String; Font:TFont; var TextRect:TRectF;
+                                   var Ascent,Descent:Single;
+                                   var CapHeight,XHeight:Single);virtual;abstract;
   end;
 
 var
