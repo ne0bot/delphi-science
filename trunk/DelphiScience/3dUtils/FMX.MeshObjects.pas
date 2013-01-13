@@ -300,7 +300,7 @@ begin
   FUnitWidth  := 1;
   FUnitHeight := 1;
   if Width > Depth then FUnitWidth := Width/Depth;
-  if Height > Depth then FUnitHeight := Depth/Width;
+  if Depth > Width then FUnitHeight := Depth/Width;
   rThickness := FThickness * (FUnitWidth/Width);
   FRenderScale := Width/FUnitWidth;
 
