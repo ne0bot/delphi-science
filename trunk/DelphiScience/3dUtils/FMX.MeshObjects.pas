@@ -83,12 +83,14 @@ Type
     FSectionDegree: Integer;
     FInnerFrameType: TFrameType;
     FOuterFrameType: TFrameType;
+    FDrawBounds: Boolean;
     procedure SetThickness(const Value: Single);
     procedure SetSubdivisionsAxes(const Value: Integer);
     procedure SetSectionDegree(const Value: Integer);
     procedure SetSectionType(const Value: TSectionType);
     procedure setInnerFrameType(const Value: TFrameType);
     procedure setOuterFrameType(const Value: TFrameType);
+    procedure SetDrawBounds(const Value: Boolean);
   protected
     FSubdivisionsAxes:Integer;
     FUnitWidth: Single;
@@ -112,12 +114,15 @@ Type
     procedure SetDepth(const Value: Single); override;
   public
     constructor Create(AOwner: TComponent); override;
+    property Data;
     Property Thickness:Single read FThickness write SetThickness;
     Property SubdivisionsAxes:Integer read FSubdivisionsAxes write SetSubdivisionsAxes;
     Property SectionType:TSectionType read FSectionType write SetSectionType;
     Property SectionDegree:Integer read FSectionDegree write SetSectionDegree;
     Property InnerFrameType:TFrameType read FInnerFrameType write setInnerFrameType;
     Property OuterFrameType:TFrameType read FOuterFrameType write setOuterFrameType;
+    Property RenderScale:Single read FRenderScale;
+    Property DrawBounds:Boolean read FDrawBounds write SetDrawBounds;
   end;
 
   TPipe = class;
@@ -126,13 +131,19 @@ Type
     FPipe: TPipe;
     FStartPosition: Single;
     FEndPosition: Single;
-    FStartMargin: Single;
-    FEndMargin:Single;
     FSubdivisions:Integer;
+    FUseGap:Boolean;
+    FFirstCenter: TPoint3d;
+    FLastCenter: TPoint3d;
+    FModifyMargins: Boolean;
     procedure SetStartPosition(const Value: Single);
     procedure SetEndPosition(const Value: Single);
     procedure SetSubdivisions(const Value: Integer);
+    function InsertPointLayer(StartLayer: TPointLayer; layerH: Single; UseGap: Boolean=False): TPointLayer;
+    procedure SetModifyMargins(const Value: Boolean);
   protected
+    FStartMargin: Single;
+    FEndMargin:Single;
     FLayerCount: Integer;
     StartLayer,EndLayer,StartMLayer,EndMLayer:TPointLayer;
     Procedure BeginModify(StartPoints:TPointLayer);virtual;
@@ -140,10 +151,15 @@ Type
     Constructor Create(aPipe:TPipe);virtual;
     Procedure ModifySubPoints(sPoints:TPointLayer;isInner:Boolean);virtual;abstract;
     Procedure DoModify(StartPoints:TPointLayer);virtual;
+    Procedure EndModify;virtual;
   published
     Property StartPosition:Single read FStartPosition write SetStartPosition;
     Property EndPosition:Single read FEndPosition write SetEndPosition;
     Property Subdivisions:Integer read FSubdivisions write SetSubdivisions;
+    Property UseGap:Boolean read FUseGap write FUseGap;
+    Property FirstCenter:TPoint3d read FFirstCenter;
+    Property LastCenter:TPoint3d read FLastCenter;
+    Property ModifyMargins:Boolean read FModifyMargins write SetModifyMargins;
   end;
 
   TBendModifier = class(TPipeModifier)
@@ -159,6 +175,17 @@ Type
   published
     Property BendAngle:Single read FBendAngle write SetBendAngle;
     Property TurnAngle:Single read FTurnAngle write SetTurnAngle;
+  end;
+
+  TBreakModifier = class(TBendModifier)
+  private
+    procedure SetEndMargin(const Value: Single);
+    procedure SetStartMargin(const Value: Single);
+  public
+    Constructor Create(aPipe:TPipe);override;
+    Procedure ModifySubPoints(sPoints:TPointLayer; isInner:Boolean);override;
+    Property StartMargin:Single read FStartMargin write SetStartMargin;
+    Property EndMargin:Single read FEndMargin write SetEndMargin;
   end;
 
   TTwistModifier = class(TPipeModifier)
@@ -186,7 +213,13 @@ Type
   TPipe = class(TAnnulus)
   private
     FModifiers: TList<TPipeModifier>;
+    FOnZAxis: Boolean;
+    FFirstCenter: TPoint3d;
+    FLastCenter: TPOint3D;
+    FScaleBeforeRender: Boolean;
     Procedure SortModifiers;
+    procedure SetOnZAxis(const Value: Boolean);
+    procedure SetScaleBeforeRender(const Value: Boolean);
   protected
     function FixHeight:Boolean;override;
     procedure SetHeight(const Value: Single); override;
@@ -201,6 +234,10 @@ Type
     Procedure ClearModifiers;
     destructor Destroy;override;
     Property Modifiers:TList<TPipeModifier> read FModifiers;
+    Property OnZAxis:Boolean read FOnZAxis write SetOnZAxis;
+    Property FirstCenter:TPoint3d Read FFirstCenter;
+    Property LastCenter:TPOint3D read FLastCenter;
+    Property ScaleBeforeRender:Boolean read FScaleBeforeRender write SetScaleBeforeRender;
   end;
 
 
@@ -300,7 +337,7 @@ begin
   FUnitWidth  := 1;
   FUnitHeight := 1;
   if Width > Depth then FUnitWidth := Width/Depth;
-  if Depth > Width then FUnitHeight := Depth/Width;
+  if Depth > Width  then FUnitHeight := Depth/Width;
   rThickness := FThickness * (FUnitWidth/Width);
   FRenderScale := Width/FUnitWidth;
 
@@ -428,6 +465,11 @@ procedure TAnnulus.Render;
 begin
   Context.SetMatrix(Matrix3DMultiply(CreateScaleMatrix3D(Vector3D(FRenderScale, Height, FRenderScale)), AbsoluteMatrix));
   Context.DrawTriangles(Data.VertexBuffer, Data.IndexBuffer, TMaterialSource.ValidMaterial(MaterialSource), AbsoluteOpacity);
+  if FDrawBounds then
+  begin
+    Context.SetMatrix(AbsoluteMatrix);
+    Context.DrawCube(Vector3D(0, 0, 0), Vector3D(Width, 0, Depth), AbsoluteOpacity,TalphaColors.Red);
+  end;
 end;
 
 procedure TAnnulus.SetDepth(const Value: Single);
@@ -436,6 +478,12 @@ begin
   FRefresh := (Self.Depth <> Value);
   inherited;
   if FRefresh then RebuildMesh;
+end;
+
+procedure TAnnulus.SetDrawBounds(const Value: Boolean);
+begin
+  FDrawBounds := Value;
+  Render;
 end;
 
 procedure TAnnulus.SetHeight(const Value: Single);
@@ -512,10 +560,9 @@ var FData:TMeshData;
     sctIndex: Integer;
 begin
   FData := Self.Data;
-
   PointsLen := Length(Points);
-
   StartPoints := TPointlayer.Create;
+  if FOnZAxis then StartPoints.RotationAngle.Vector := Vector3d(90,90,0);
   EndPoints := TPointlayer.Create;
   StartPoints.AddChild(EndPoints);
 
@@ -530,7 +577,6 @@ begin
     EndPoints.Points[i] := Point3d(Points[i].X,0,Points[i].Z);
   end;
 
-
   backM := 1;
   if back then backM := -1;
 
@@ -544,7 +590,17 @@ begin
   CntIndexInRow := PointsLen*6;
   if FSectionType <> sctNone  then begin
     CntIndexInRow := (PointsLen-1)*6;
+  end;
 
+  if FScaleBeforeRender then
+  begin
+    for i := 0 to LayerCount-1 do
+    begin
+      pLayer := StartPoints.GetLayer(i);
+      pLayer.Content.Scale.Point := Point3d(pLayer.Content.Scale.Point.X*FRenderScale,
+                                            pLayer.Content.Scale.Point.Y,
+                                            pLayer.Content.Scale.Point.Z*FRenderScale);
+    end;
   end;
 
   AbsStart := Point3d(0,-Height/2,0);
@@ -622,8 +678,15 @@ begin
   for i := 0 to EndPoints.Length-1 do
     lastPoints[i] := EndPoints.AbsPoint(i)+AbsStart;
 
-  StartPoints.Free;
+  FFirstCenter := StartPoints.AbsoluteCenter;
+  FLastCenter := EndPoints.AbsoluteCenter;
 
+  for pModifier in FModifiers do
+  begin
+    pModifier.EndModify;
+  end;
+
+  StartPoints.Free;
 end;
 
 
@@ -704,6 +767,8 @@ begin
   Self.TwoSide := True;
   FModifiers := TList<TPipeModifier>.Create;
   FModifiers.OnNotify := ModifiersNotify;
+  FOnZAxis := False;
+  FScaleBeforeRender := False;
   RebuildMesh;
 end;
 
@@ -758,7 +823,8 @@ end;
 
 procedure TPipe.Render;
 begin
-  Context.SetMatrix(Matrix3DMultiply(CreateScaleMatrix3D(Vector3D(FRenderScale, 1, FRenderScale)), AbsoluteMatrix));
+  if not FScaleBeforeRender then
+    Context.SetMatrix(Matrix3DMultiply(CreateScaleMatrix3D(Vector3D(FRenderScale, 1, FRenderScale)), AbsoluteMatrix));
   Context.DrawTriangles(Data.VertexBuffer, Data.IndexBuffer, TMaterialSource.ValidMaterial(MaterialSource), AbsoluteOpacity);
 end;
 
@@ -772,6 +838,18 @@ end;
 
 
 
+
+procedure TPipe.SetOnZAxis(const Value: Boolean);
+begin
+  FOnZAxis := Value;
+  RebuildMesh;
+end;
+
+procedure TPipe.SetScaleBeforeRender(const Value: Boolean);
+begin
+  FScaleBeforeRender := Value;
+  RebuildMesh;
+end;
 
 function CompareLevels(Item1, Item2: TPipeModifier): Integer;
 begin
@@ -801,6 +879,44 @@ begin
 end;
 
 { TPipeModifier }
+
+
+Function TPipeModifier.InsertPointLayer(StartLayer:TPointLayer;layerH:Single;UseGap:Boolean=False):TPointLayer;
+var lParent: TPointLayer;
+    FLayer:TPointLayer;
+begin
+  result := nil;
+  FLayer := StartLayer;
+  repeat
+    if abs(layerH - FLayer.LayerH) < 0.00001 then begin
+      result := FLayer;
+      if UseGap then begin
+        result := Result.CreateChildAtPosition(Point3d(0,0,0),1);
+        Result.GapLayer := True;
+      end;
+    end else if (FLayer.LayerH > layerH) then
+    begin
+      if assigned(FLayer.RealParent) then
+      begin
+        lParent := FLayer.RealParent;
+        result := lParent.CreateChildAtPosition(Point3d(0,layerH-lParent.LayerH,0),1);
+        if UseGap then begin
+          result := Result.CreateChildAtPosition(Point3d(0,0,0),1);
+          Result.GapLayer := True;
+        end;
+      end;
+    end else if (result = nil) and (FLayer.RealChild = nil) then
+    begin
+      result := FLayer.CreateChildAtPosition(Point3d(0,layerH-FLayer.LayerH,0),1);
+      if UseGap then begin
+        result := Result.CreateChildAtPosition(Point3d(0,0,0),1);
+        Result.GapLayer := True;
+      end;
+    end;
+    FLayer := FLayer.RealChild;
+  until (result <> nil) or (FLayer = nil) ;
+end;
+
 procedure TPipeModifier.BeginModify(StartPoints:TPointLayer);
 var
   i: Integer;
@@ -809,54 +925,27 @@ var
   h1,h2,dh: Single;
   sCnt,k: Integer;
   tempList: Tlist<TPointLayer>;
-
-  Function InsertPointLayer(layerH:Single;UseGap:Boolean=False):TPointLayer;
-  var lParent: TPointLayer;
-  begin
-    result := nil;
-    FLayer := StartPoints;
-    repeat
-      if abs(layerH - FLayer.LayerH) < 0.00001 then begin
-        result := FLayer;
-        if UseGap then begin
-          result := Result.CreateChildAtPosition(Point3d(0,0,0),1);
-          Result.GapLayer := True;
-        end;
-      end else if (FLayer.LayerH > layerH) then
-      begin
-        if assigned(FLayer.RealParent) then
-        begin
-          lParent := FLayer.RealParent;
-          result := lParent.CreateChildAtPosition(Point3d(0,layerH-lParent.LayerH,0),1);
-          if UseGap then begin
-            result := Result.CreateChildAtPosition(Point3d(0,0,0),1);
-            Result.GapLayer := True;
-          end;
-        end;
-      end else if (result = nil) and (FLayer.RealChild = nil) then
-      begin
-        result := FLayer.CreateChildAtPosition(Point3d(0,layerH-FLayer.LayerH,0),1);
-        if UseGap then begin
-          result := Result.CreateChildAtPosition(Point3d(0,0,0),1);
-          Result.GapLayer := True;
-        end;
-      end;
-      FLayer := FLayer.RealChild;
-    until (result <> nil) or (FLayer = nil) ;
-  end;
+  divCount: Integer;
 begin
 
-  StartLayer := InsertPointLayer(FStartPosition);
-  EndLayer := InsertPointLayer(FEndPosition);
+  StartLayer := InsertPointLayer(StartPoints,FStartPosition,FUseGap);
+  EndLayer := InsertPointLayer(StartPoints,FEndPosition,FUseGap);
 
   StartMLayer := nil;
   EndMLayer := nil;
 
-  if (FStartMargin > 0) then StartMLayer := InsertPointLayer(FStartPosition+FStartMargin);
-  if (FEndMargin > 0) then EndMLayer := InsertPointLayer(FEndPosition-FEndMargin);
+  divCount := (FSubdivisions+1);
+  if (FStartMargin > 0) then begin
+    StartMLayer := InsertPointLayer(StartPoints,FStartPosition+FStartMargin);
+    divCount := divCount-1;
+  end;
+  if (FEndMargin > 0) then begin
+    EndMLayer := InsertPointLayer(StartPoints,FEndPosition-FEndMargin);
+    divCount := divCount-1;
+  end;
 
-  mLen := Self.EndPosition-Self.StartPosition;
-  dLen := mLen/(FSubdivisions+1);
+  mLen := Self.EndPosition-Self.StartPosition-(FEndMargin+FStartMargin);
+  dLen := mLen/divCount;
 
   if assigned(StartLayer) and assigned(EndLayer)  then
   begin
@@ -892,6 +981,7 @@ begin
   FEndPosition := FPipe.Height/4;
   FStartMargin := 0;
   FEndMargin := 0;
+  FModifyMargins := False;
 end;
 
 procedure TPipeModifier.DoModify(StartPoints:TPointLayer);
@@ -899,22 +989,33 @@ var FLayer: TPointLayer;
 begin
   if (FStartPosition > FEndPosition) then exit;
   if (FStartPosition = FEndPosition) then exit;
-
   BeginModify(StartPoints);
   if (not assigned(StartLayer)) or (not assigned(EndLayer)) then
     raise Exception.Create('Modifier Position Indexes cant be arranged');
   FLayer := StartLayer;
-  if assigned(StartMLayer) then FLayer := StartMLayer;
+  if (not fModifyMargins)  and assigned(StartMLayer) then FLayer := StartMLayer;
   self.ModifySubPoints(FLayer,False);
   repeat
     FLayer := FLayer.RealChild;
     if assigned(FLayer) then self.ModifySubPoints(FLayer,False);
-  until (Flayer = nil) or (FLayer = EndMLayer) or (FLayer = EndLayer);
+  until (Flayer = nil) or ((FLayer = EndMLayer) and (not fModifyMargins)) or (FLayer = EndLayer);
+end;
+
+procedure TPipeModifier.EndModify;
+begin
+  if assigned(StartLayer) then FFirstCenter := StartLayer.AbsoluteCenter;
+  if assigned(EndLayer) then FLastCenter := EndLayer.AbsoluteCenter;
 end;
 
 procedure TPipeModifier.SetEndPosition(const Value: Single);
 begin
   FEndPosition := Value;
+  FPipe.RebuildMesh;
+end;
+
+procedure TPipeModifier.SetModifyMargins(const Value: Boolean);
+begin
+  FModifyMargins := Value;
   FPipe.RebuildMesh;
 end;
 
@@ -1096,8 +1197,11 @@ begin
 end;
 
 function TPointLayer.GeAbsoluteCenter: TPoint3d;
+var tTurn: Single;
 begin
-  Result := Point3d(Vector3dTransform(Vector3d(Point3d(0,0,0)),AbsoluteMatrix));
+  tTurn := GetTotalTurn;
+  FContent.FContent.RotationAngle.Y := -TTurn;
+  Result := Point3d(Vector3dTransform(Vector3d(0,0,0),FContent.FContent.AbsoluteMatrix));
 end;
 
 function TPointLayer.GetAbsoluteMatrix: TMatrix3D;
@@ -1293,6 +1397,45 @@ end;
 procedure TDummyPointLayer.CreateDummies;
 begin
   // Do Nothing
+end;
+
+{ TBreakModifier }
+
+
+constructor TBreakModifier.Create(aPipe: TPipe);
+begin
+  inherited;
+  FModifyMargins := True;
+end;
+
+procedure TBreakModifier.ModifySubPoints(sPoints: TPointLayer;
+  isInner: Boolean);
+var
+  Index: Integer;
+  FCurrentBendAngle: Single;
+  elpR: Single;
+begin
+  FCurrentBendAngle := (FBendAngle/(FlayerCount-2));
+  FCurrentBendAngle := FCurrentBendAngle/2;
+  elpR := 1 / cos((FCurrentBendAngle)*(pi/180));
+  Index := SPoints.Index;
+  if (Index > StartLayer.Index) and (Index < EndLayer.Index) then begin
+    sPoints.RotationAngle.Z := FCurrentBendAngle;
+    sPoints.Content.Scale.Point := Point3d(elpR,1,1);
+    sPoints.DummyChild.RotationAngle.Z := FCurrentBendAngle;
+  end;
+end;
+
+procedure TBreakModifier.SetEndMargin(const Value: Single);
+begin
+  FEndMargin := Value;
+  FPipe.RebuildMesh;
+end;
+
+procedure TBreakModifier.SetStartMargin(const Value: Single);
+begin
+  FStartMargin := Value;
+  FPipe.RebuildMesh;
 end;
 
 initialization
