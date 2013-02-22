@@ -5,7 +5,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Rtti, System.Classes,
   System.Variants,FMX.Types,FMX.Text,FMX.Canvas.GDIP,Winapi.Windows,
   WinApi.Messages,WinApi.TlHelp32,Winapi.GDIPOBJ,Winapi.GDIPAPI,
-  FMX.PlatformExtensions;
+  Winapi.ShellAPI,FMX.PlatformExtensions;
 
 Type
 
@@ -16,6 +16,7 @@ Type
     Class Procedure GetTextMetrics(Text:String; Font:TFont; var TextRect:TRectF;
                                    var Ascent,Descent:Single;
                                    var CapHeight,XHeight:Single);override;
+    Class Procedure ShellOpen(Url:String);override;
   end;
 
 implementation
@@ -140,6 +141,11 @@ begin
       FreeAndNil(Layout);
     end;
   end;
+end;
+
+class procedure TPlatformExtensionsWin.ShellOpen(Url: String);
+begin
+  ShellExecute(0, 'OPEN', PChar(Url), '', '', SW_SHOWNORMAL);
 end;
 
 end.

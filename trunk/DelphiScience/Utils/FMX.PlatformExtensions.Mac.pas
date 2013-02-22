@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Rtti, System.Classes,
   System.Variants,FMX.Types,FMX.Text,MacApi.Appkit,Macapi.CoreFoundation,
-  Macapi.Foundation,Macapi.CoreText,Macapi.CocoaTypes,FMX.PlatformExtensions;
+  Posix.StdLib, Macapi.Foundation, Macapi.CoreText,Macapi.CocoaTypes,FMX.PlatformExtensions;
 
 Type
   TPlatformExtensionsMac = class(TPlatformExtensions)
@@ -15,6 +15,7 @@ Type
     Class Procedure GetTextMetrics(Text:String; Font:TFont; var TextRect:TRectF;
                                    var Ascent,Descent:Single;
                                    var CapHeight,XHeight:Single);override;
+    Class Procedure ShellOpen(Url:String);override;
   end;
 
 implementation
@@ -123,6 +124,22 @@ begin
     end;
   end;
 
+end;
+
+class procedure TPlatformExtensionsMac.ShellOpen(Url: String);
+var
+  Workspace : NSWorkspace;
+  mURL : NSURL;
+begin
+  Workspace := TNSWorkspace.Create;
+  if fileexists(Url) then
+  begin
+    Workspace.openFile(NSSTR(Url));
+  end else begin
+    mURL := TNSURL.Create;
+    mURL.initWithString(NSSTR(Url));
+    Workspace.openURL(mURL);
+  end;
 end;
 
 end.

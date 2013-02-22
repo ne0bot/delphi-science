@@ -14,6 +14,7 @@ Type
     Class Procedure GetTextMetrics(Text:String; Font:TFont; var TextRect:TRectF;
                                    var Ascent,Descent:Single;
                                    var CapHeight,XHeight:Single);virtual;abstract;
+    Class Procedure ShellOpen(Url:String);virtual;abstract;
   end;
 
 var
